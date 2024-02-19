@@ -39,7 +39,7 @@ class PropertyAnimatorViewController: UIViewController {
     }
     
     @objc func buttonTapped() {
-        let vc = CABasicAnimationViewController()
+        guard let vc = AnimatedTransitionViewController.storyboardInstance() else { return }
         self.navigationController?.pushViewController(vc, animated: false)
     }
     
