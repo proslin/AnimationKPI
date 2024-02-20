@@ -29,18 +29,57 @@ class PropertyAnimatorViewController: UIViewController {
         setupView()
         self.view.backgroundColor = .systemBackground
         
-        //        let gesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
-        //        self.view.addGestureRecognizer(gesture)
-        
         setupButton()
         nextButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         
-//        animator = UIViewPropertyAnimator
+        animator = UIViewPropertyAnimator(duration: 1.5, curve: .easeInOut, animations: {
+            self.viewForAnimation.transform = CGAffineTransform.init(scaleX: 1.5, y: 1.5)
+            self.viewForAnimation.layer.backgroundColor = UIColor.red.cgColor
+            self.viewForAnimation.layer.cornerRadius = 15
+        })
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
+        viewForAnimation.addGestureRecognizer(gesture)
+        
+        let doubleGesture = UITapGestureRecognizer(target: self, action: #selector(viewDoubleTapped))
+        viewForAnimation.addGestureRecognizer(doubleGesture)
+        doubleGesture.numberOfTouchesRequired = 2
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan(_:)))
+        viewForAnimation.addGestureRecognizer(panGesture)
     }
     
     @objc func buttonTapped() {
         guard let vc = AnimatedTransitionViewController.storyboardInstance() else { return }
         self.navigationController?.pushViewController(vc, animated: false)
+    }
+    
+    @objc func viewTapped() {
+        animator.addAnimations {
+            self.viewForAnimation.transform = CGAffineTransform.init(scaleX: 1.5, y: 1.5)
+            self.viewForAnimation.layer.backgroundColor = UIColor.red.cgColor
+            self.viewForAnimation.layer.cornerRadius = 15
+        }
+        animator.startAnimation()
+    }
+    
+    @objc func viewDoubleTapped() {
+        animator.addAnimations {
+            self.viewForAnimation.transform = .identity
+            self.viewForAnimation.layer.backgroundColor = UIColor.systemPurple.cgColor
+            self.viewForAnimation.layer.cornerRadius = 15
+        }
+        animator.startAnimation()
+    }
+    
+    @objc func didPan(_ panGesture: UIPanGestureRecognizer) {
+        let newPosition = panGesture.translation(in: self.view)
+        let currentX = viewForAnimation.center.x
+        let currentY = viewForAnimation.center.y
+        let final = view.bounds.height
+        
+        viewForAnimation.center = CGPoint(x: currentX + newPosition.x, y: currentY + newPosition.y)
+        animator.fractionComplete = viewForAnimation.frame.origin.y / final
+        panGesture.setTranslation(.zero, in: self.view)
     }
     
     func setupView() {
