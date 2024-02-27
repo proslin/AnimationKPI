@@ -40,23 +40,33 @@ class SecondViewController: UIViewController {
     }
     
     @objc func viewTapped() {
-        UIView.animate(withDuration: 2.0,
-                               delay: 0.1,
-                               usingSpringWithDamping: 0.1,
-                               initialSpringVelocity: 0.1,
-                               options: .curveLinear,
-                               animations: {
-                    self.viewForSpringAnimation.frame.origin.x = self.view.bounds.maxX - self.viewForSpringAnimation.frame.width - 10
-                }, completion: nil)
+        let start = self.viewForSpringAnimation.center
+        
+//        self.viewForSpringAnimation.frame.origin.x = 0
+        UIView.animateKeyframes(withDuration: 3.0, delay: 0.2, options: .calculationModeLinear, animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.25) {
+                            self.viewForSpringAnimation.transform =  CGAffineTransform(scaleX: 2, y: 2)
+                        }
+            UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.25) {
+                            self.viewForSpringAnimation.center =  CGPoint(x: self.view.bounds.midX, y: self.view.bounds.maxY)
+                        }
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.25) {
+                            self.viewForSpringAnimation.center =  CGPoint(x: self.view.bounds.width, y: start.y)
+                        }
+            UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 0.25) {
+                            self.viewForSpringAnimation.center =  start
+                        }
+        }, completion: nil)
+        
     }
     
     func setupView() {
         view.addSubview(viewForSpringAnimation)
         NSLayoutConstraint.activate([
-            viewForSpringAnimation.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            viewForSpringAnimation.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewForSpringAnimation.widthAnchor.constraint(equalToConstant: 300),
-            viewForSpringAnimation.heightAnchor.constraint(equalToConstant: 200),
+            viewForSpringAnimation.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -200),
+            viewForSpringAnimation.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -100),
+            viewForSpringAnimation.widthAnchor.constraint(equalToConstant: 150),
+            viewForSpringAnimation.heightAnchor.constraint(equalToConstant: 70),
             
         ])
     }
