@@ -35,27 +35,25 @@ class PresentAnimationController: NSObject, UIViewControllerAnimatedTransitionin
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        //        guard let fromViewController = transitionContext.viewController(forKey: .from),
         guard let toViewController = transitionContext.viewController(forKey: .to),
               let snapshot = toViewController.view.snapshotView(afterScreenUpdates: true) else { return }
         
-        //containerView
         let containerView = transitionContext.containerView
-        let finalFrame = transitionContext.finalFrame(for: toViewController)
-        
         snapshot.frame = openingFrame
+//        snapshot.alpha = 0.0
         containerView.addSubview(toViewController.view)
         containerView.addSubview(snapshot)
         toViewController.view?.isHidden = true
         
         UIView.animate(withDuration: presentDuration, animations: {
-            snapshot.frame = finalFrame
-        },
-                       // 5
-                       completion: { _ in
+            snapshot.frame = (transitionContext.finalFrame(for: toViewController))
+//            snapshot.alpha = 1.0
+        }, completion: { _ in
             toViewController.view.isHidden = false
             snapshot.removeFromSuperview()
-            toViewController.view.layer.transform = CATransform3DIdentity
+            if transitionContext.transitionWasCancelled {
+                toViewController.view.removeFromSuperview()
+            }
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
     }

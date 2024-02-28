@@ -7,9 +7,8 @@
 
 import UIKit
 
-// Анимация констрейнтов
 class SecondViewController: UIViewController {
-    private lazy var viewForSpringAnimation: UIView = {
+    private lazy var viewForAnimation: UIView = {
             let view: UIView = .init()
         view.backgroundColor = .green
             view.translatesAutoresizingMaskIntoConstraints = false
@@ -40,33 +39,39 @@ class SecondViewController: UIViewController {
     }
     
     @objc func viewTapped() {
-        let start = self.viewForSpringAnimation.center
+        let start = self.viewForAnimation.center
         
-//        self.viewForSpringAnimation.frame.origin.x = 0
+        //        self.viewForSpringAnimation.frame.origin.x = 0
         UIView.animateKeyframes(withDuration: 3.0, delay: 0.2, options: .calculationModeLinear, animations: {
+            // withRelativeStartTime время начала анимации 0..1 где 0 - начало общей анимации, 1 - конец общей анимации. Если обща анимаци 2 секунды, то 0.5 значит 1 секунда от начала
+            // relativeDuration время за которое анимация достигнет указанного значения
             UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.25) {
-                            self.viewForSpringAnimation.transform =  CGAffineTransform(scaleX: 2, y: 2)
-                        }
+                self.viewForAnimation.transform =  CGAffineTransform(scaleX: 2, y: 2)
+            }
             UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.25) {
-                            self.viewForSpringAnimation.center =  CGPoint(x: self.view.bounds.midX, y: self.view.bounds.maxY)
-                        }
+                self.viewForAnimation.center =  CGPoint(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.maxY)
+            }
             UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.25) {
-                            self.viewForSpringAnimation.center =  CGPoint(x: self.view.bounds.width, y: start.y)
-                        }
-            UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 0.25) {
-                            self.viewForSpringAnimation.center =  start
-                        }
-        }, completion: nil)
-        
+                self.viewForAnimation.center =  CGPoint(x: UIScreen.main.bounds.width, y: start.y)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 0.75) {
+                self.viewForAnimation.center =  start
+            }
+        }, completion: { _ in
+            // возвращаем объект к первоначальному состоянию до Аффинных трансформаций, тоже может быть заанимирован
+            UIView.animate(withDuration: 1.0) {
+                self.viewForAnimation.transform = .identity
+            }
+        })
     }
     
     func setupView() {
-        view.addSubview(viewForSpringAnimation)
+        view.addSubview(viewForAnimation)
         NSLayoutConstraint.activate([
-            viewForSpringAnimation.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -200),
-            viewForSpringAnimation.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -100),
-            viewForSpringAnimation.widthAnchor.constraint(equalToConstant: 150),
-            viewForSpringAnimation.heightAnchor.constraint(equalToConstant: 70),
+            viewForAnimation.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -200),
+            viewForAnimation.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -100),
+            viewForAnimation.widthAnchor.constraint(equalToConstant: 150),
+            viewForAnimation.heightAnchor.constraint(equalToConstant: 70),
             
         ])
     }

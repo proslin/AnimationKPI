@@ -50,7 +50,8 @@ class AnimatedTransitionViewController: UIViewController, UICollectionViewDelega
         // present viewController
         let expandedVC = ExpandedViewController()
         expandedVC.transitioningDelegate  = self
-        expandedVC.modalPresentationStyle = .fullScreen
+//        expandedVC.modalPresentationStyle = .fullScreen
+        expandedVC.modalPresentationStyle = .custom
         expandedVC.view.backgroundColor = colorArray[indexPath.row]
         present(expandedVC, animated: true)
     }

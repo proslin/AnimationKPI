@@ -51,7 +51,7 @@
                     <navigationItem key="navigationItem" id="mwf-27-kXz"/>
                     <connections>
                         <outlet property="viewForAnimation" destination="6rl-bZ-9se" id="UeS-K0-GSh"/>
-                        <outlet property="viewForKeyframeAnimation" destination="Mh8-Hg-KFz" id="J5L-i0-7cn"/>
+                        <outlet property="viewForSpringAnimation" destination="Mh8-Hg-KFz" id="J5L-i0-7cn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

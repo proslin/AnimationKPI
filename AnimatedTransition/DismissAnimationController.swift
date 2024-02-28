@@ -16,24 +16,24 @@ class DismissAnimationController: NSObject, UIViewControllerAnimatedTransitionin
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.6
+        return dismissDuration
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let fromVC = transitionContext.viewController(forKey: .from),
           let toVC = transitionContext.viewController(forKey: .to),
-          let snapshot = fromVC.view.snapshotView(afterScreenUpdates: false)
+          let snapshot = fromVC.view.snapshotView(afterScreenUpdates: true)
           else {
             return
         }
 
         let containerView = transitionContext.containerView
-        containerView.insertSubview(toVC.view, at: 0)
         containerView.addSubview(snapshot)
         fromVC.view.isHidden = true
 
-        UIView.animate(withDuration: dismissDuration, animations: {
+        UIView.animate(withDuration: dismissDuration, delay: 0, options: .curveEaseOut, animations: {
             snapshot.frame = self.destinationFrame
+//            snapshot.alpha = 0
         },
           completion: { _ in
             fromVC.view.isHidden = false
